@@ -7,7 +7,7 @@
   vars:
     java_download: http://download.oracle.com/otn-pub/java/jdk/8u112-b15/jdk-8u112-linux-x64.tar.gz
     java_name: jdk1.8
-    download_folder: /usr/src
+    download_folder: /tmp
     java_archive: "{{download_folder}}/{{java_name}}.tar.gz"
     java_folder: /usr/lib/jvm
     java_alias: java-8-oracle
@@ -18,7 +18,7 @@
     apt: pkg=wget
 
   - name: Download Java
-    command: 'wget -q -O {{java_archive}} --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" {{java_download}} creates={{java_archive}}'
+    command: 'wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" {{java_download}} creates={{java_archive}}'
 
   - name: Extract Java archive
     command: "tar -xzf {{java_archive}} -C {{download_folder}} creates={{download_folder}}/{{java_name}}"
@@ -38,4 +38,3 @@
   - name: Make Java available for system
     command: 'update-alternatives --install "/usr/bin/java" "java" "{{java_folder}}/{{java_alias}}/bin/java" 1'
 
- # wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u112-b15/jdk-8u112-linux-x64.tar.gz
