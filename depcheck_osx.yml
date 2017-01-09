@@ -1,0 +1,92 @@
+---
+
+- hosts: projeto-homolog
+  remote_user: testcloud_ub
+  sudo: yes
+
+  vars:
+    - homeDir: /home/testcloud_ub
+    - appDir : app
+
+  tasks:
+
+  - name: Install RVM
+    shell: "curl -sSL https://get.rvm.io | bash"
+
+
+
+/usr/bin/ruby -e ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)"
+PATH="$HOME/.linuxbrew/bin:$PATH"
+
+ - name:
+  echo "Updating BREW"
+
+  comand: brew update
+
+  -name: "Instaling Brew Services."
+  command: brew tap homebrew/services
+
+
+ -name: Install figlet
+  command: brew install figlet
+
+  figlet "DEP CHECK"
+  printf "Checking for missing dependencies.\n"
+  printf "This checker is only valid for OSX.\n"
+
+
+  sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+  sudo xcodebuild -license accept
+
+
+if ! command_exists java; then
+  brew install Caskroom/cask/java
+fi
+
+if ! command_exists node; then
+  brew install node
+  echo "Updating NPM"
+  npm install npm -g
+fi
+
+if ! command_exists pm2; then
+  npm install pm2 -g
+fi
+
+if ! command_exists mongod --version; then
+  brew install mongodb --with-openssl
+  brew services start mongodb
+fi
+
+if ! command_exists redis-server --version; then
+  brew install redis
+  brew services start redis
+  echo "set stop-writes-on-bgsave-error yes" | redis-cli
+fi
+
+if ! command_exists android --help; then
+  brew install android-sdk
+  android update sdk --no-ui --filter tools,platform-tools
+fi
+
+if ! command_exists nginx -v; then
+  brew install nginx
+  brew services start nginx
+fi
+
+if ! command_exists ideviceinfo -v; then
+  brew install libimobiledevice
+fi
+
+if ! command_exists rvm -v; then
+  curl -L https://get.rvm.io | bash -s stable --auto-dotfiles --autolibs=enable --ruby
+  echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function' >> ~/.bashrc
+fi
+
+if ! command_exists ideviceinfo -v; then
+  brew install libimobiledevice
+fi
+
+if ! command_exists ios-deploy --version; then
+  npm install -g ios-deploy
+fi

@@ -1,0 +1,48 @@
+---
+
+- hosts: projeto-local
+  remote_user: casalocal
+  sudo: yes
+
+  tasks:
+
+  - name: Install packages to install android sdk
+    dnf: name={{ item }} state=installed
+    with_items:
+      - libstdc++
+      - zlib-devel
+      - expect
+      - gradle
+      - ant
+      - ccache
+      - autoconf
+      - automake
+      - python-devel
+      - ncurses-devel
+
+  - name: Download sdk tools
+    get_url: >
+     url=http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
+     dest=/opt/android-sdk_r24.4.1-linux.tar.gz
+    register: sdk_file
+
+  - name: Unarchive sdk tools
+    command: >
+     tar xzf {{ sdk_file.dest }}
+     creates=/opt/android-sdk-linux
+     chdir=/opt
+
+  - name: Set envs for android sdk
+    shell: 'echo "export PATH=/tmp/android-sdk-linux/tools:${PATH}" >> $HOME/.bash_profile'
+
+  - name: Install Android SDKs
+    shell: echo y | android update sdk -u -a -t "{{ item }}"
+    with_items:
+     - tools
+     - platform-tools
+     - build-tools-19.1.0
+     - android-20
+     - android-19
+     - android-18
+     - android-17
+     - extra-android-support

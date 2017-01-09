@@ -1,0 +1,85 @@
+---
+
+- hosts: <definir>
+  remote_user: <definir>
+  sudo: yes
+
+  tasks:
+
+  - name: Instalando Dependências
+    dnf: name={{ item }} state=installed
+    with_items:
+      - npm
+      - git
+      - mcrypt
+      - curl
+      - nginx
+      - redis
+      - mongodb
+      - mongodb-server
+      - mongo-tools-devel.noarch
+      - java-1.8.0-openjdk
+      - figlet
+      - libimobiledevice
+      - libimobiledevice-utils
+      - yasm
+
+  - name: Start MONGOD
+    service:
+      name: mongod
+      state: started
+
+  - name: Start REDIS
+    service:
+      name: redis
+      state: started
+
+  - name: Start NGINX
+    service:
+      name: nginx
+      state: started
+
+  - name: Download NODE
+    shell: "curl --silent --location https://rpm.nodesource.com/setup_7.x | bash -"
+
+  - name: Install NODE
+    dnf:
+      name: nodejs
+
+  - name: Install NPM
+    shell: "npm install npm -g"
+
+  - name: Install PM2
+    npm: name=pm2 global=yes production=yes
+
+  - name: Install pm2
+    shell: "npm install pm2 -g"
+
+  - include: 'tasks/android_sdk_fedora.yml'
+
+  - name: Instalando Dependências do OpenSTF
+    dnf: name={{ item }} state=installed
+    with_items:
+      - rethinkdb
+      - GraphicsMagick
+      - zeromq
+      - protobuf
+      - yasm
+      - pkgconfig
+
+  - name: Copiando
+    shell: "cp $WORKSPACE/devops/environment/startup/rethinkdb /usr/local/etc/rethinkdb"
+
+  - name: create stf log path
+    shell: "mkdir -p /testcloud/stf/log"
+
+  - name: create stf log path
+    shell: "mkdir -p /testcloud/stf/log"
+
+  - name: Start REDTHINKDB
+    service:
+      name: rethinkdb
+      state: started
+
+  - name: Install OpenSTF
+    shell: "npm install -g stf"

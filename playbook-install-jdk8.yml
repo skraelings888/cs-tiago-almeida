@@ -1,0 +1,40 @@
+---
+
+- hosts: projeto-homolog
+  remote_user: testcloud_ub
+  sudo: yes
+
+  vars:
+    java_download: http://download.oracle.com/otn-pub/java/jdk/8u112-b15/jdk-8u112-linux-x64.tar.gz
+    java_name: jdk1.8
+    download_folder: /home/testcloud_ub/{{java_name}}
+    java_archive: "{{download_folder}}/{{java_name}}.tar.gz"
+    java_folder: /usr/lib/jvm
+    java_alias: java-8-oracle
+    
+
+  tasks:
+
+  - name: Install wget
+    apt: pkg=wget
+
+  - name: Download Java
+    command: 'wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" {{java_download}} creates={{java_archive}}'
+
+  - name: Extract Java archive
+    command: "tar -xzf {{java_archive}} -C {{download_folder}} creates={{download_folder}}/{{java_name}}"
+
+  - name: Fix ownership
+    file: "state=directory path={{download_folder}}/{{java_name}} owner=root group=root recurse=yes"
+
+  - name: Create Java folder
+    file: "state=directory path={{java_folder}}"
+
+  - name: Move Java to final folder
+    command: "mv {{download_folder}}/{{java_name}} {{java_folder}} creates={{java_folder}}/{{java_name}}"
+
+  - name: Create symlink for easier update
+    file: "state=link src={{java_folder}}/{{java_name}} dest={{java_folder}}/{{java_alias}}"
+
+  - name: Make Java available for system
+    command: 'update-alternatives --install "/usr/bin/java" "java" "{{java_folder}}/{{java_alias}}/bin/java" 1'

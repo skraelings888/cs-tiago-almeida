@@ -1,0 +1,55 @@
+---
+
+- hosts: projeto-homolog
+  remote_user: testcloud_ub
+  sudo: yes
+
+  tasks:
+
+  - name: Instalando Dependencias necessárias
+    apt: name={{ item }} update_cache=yes state=latest
+    with_items:
+      - build-essential
+      - nodejs-legacy
+      - nodejs
+      - npm
+      - git
+      - mcrypt
+      - curl
+      - nginx
+      - redis-server
+      - redis-tools
+      - mongodb
+      - mongodb-clients
+      - mongodb-server
+      - openjdk-8-jdk
+      - figlet
+      - libimobiledevice-dev
+      - libimobiledevice-utils
+
+  - name: Start MONGOD
+    service: name=mongodb state=started
+
+  - name: Start REDIS
+    service: name=redis state=started
+
+  - name: Start NGINX
+    service: name=nginx state=started
+
+  - name: Download NODE
+    shell: "curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -"
+
+  - name: Install NODE
+    apt: name=nodejs
+
+  - name: Install NPM
+    shell: "npm install npm -g"
+
+  - name: Install PM2
+    npm: name=pm2 global=yes production=yes
+
+  - name: Install pm2
+    shell: "npm install pm2 -g"
+
+  - name: Install SDK ANDROID
+    include: 'tasks/android_sdk.yml'

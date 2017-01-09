@@ -1,0 +1,15 @@
+---
+
+- name: Install packages to install android sdk
+  dnf: name={{ item }} state=installed
+  with_items:
+    - libstdc++
+    - zlib-devel
+    - expect
+    - gradle
+    - ant
+    - ccache
+    - autoconf
+    - automake
+    - python-devel
+    - ncurses-devel
