@@ -102,11 +102,11 @@ Ele fara uso do módulo dnf para instalar o Nginx (se não estiver instalado). O
 
 ##Algumas FLAGS:
 
-    + All - Executar em todos os hosts definidos a partir do arquivo de inventário
-    + s - Executar usando o sudo
-    + m dnf - Use o módulo dnf
-    + a 'name=nginx state=instalado' - Fornece os argumentos para o módulo dnf, incluindo o nome do pacote e o estado final desejado.
-    + --ask-sudo - pede senha de sudo
++ All - Executar em todos os hosts definidos a partir do arquivo de inventário
++ s - Executar usando o sudo
++ m dnf - Use o módulo dnf
++ a 'name=nginx state=instalado' - Fornece os argumentos para o módulo dnf, incluindo o nome do pacote e o estado final desejado.
++ --ask-sudo - pede senha de sudo
 
 Podemos executar todas as nossas tarefas necessárias (através de módulos) desta forma ad-hoc, mas vamos tornar isso mais gerenciável. Vamos mover essa tarefa para um Playbook, que pode executar e coordenar várias tarefas.
 
@@ -128,6 +128,6 @@ Comoo vemos acima, ele executou as tarefas com sucesso, porem nada foi alterado 
 
 A sintaxe do comando para execução dos playbooks é:
 
-ansible-playbook -i <inventaruio> <playbook>
+ansible-playbook -i inventario playbook
 
 > ref: [Playbooks](http://docs.ansible.com/ansible/playbooks_intro.html).
