@@ -1,11 +1,5 @@
 ---
 
-- hosts: projeto-local
-  remote_user: casalocal
-  sudo: yes
-
-  tasks:
-
   - name: Install packages to install android sdk
     dnf: name={{ item }} state=installed
     with_items:
