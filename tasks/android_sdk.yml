@@ -1,11 +1,5 @@
 ---
 
-- hosts: projeto-homolog
-  remote_user: testcloud_ub
-  sudo: yes
-
-  tasks:
-
   - name: Install packages to install android sdk
     apt: name={{ item }} state=installed
     with_items:
