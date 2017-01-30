@@ -1,11 +1,11 @@
-# Automação e provisionamento agil com Ansible
+# Automação e provisionamento ágil com Ansible
 
-Hoje irei falar um pouco sobre minha experiencia com uma ferramenta muito util de automação, o _Ansible_.
-Estou trabalhando em um projeto onde é desenvolvida uma aplicação que depende de uma série de dependencias e serviços para funcionar. Além de ter que automatizar todo o processo de instalação de bibliotecas, instalação/atualização de pacotes, serviços, deploy e etc, tambe tinha que contar com a possibilidade de futuramente ter que rodar essa mesma aplicação e suas dependencias em outros servidores, mantendo sempre tudo atualizado e replicado em _Real Time_ para todos os nós e por ultimo e não menos importante, precisava pensar em uma forma de validar de forma "idempotent" se nessas maquinas ja existiam essas depedencias, ou seja, o comando só poderia ser aplicado quando ele realmente necessitar ser aplicado. Explicando de uma forma mais precisa o significado do termo _idempotent_ para nosso cenario, pense que voce precisa para instalar um determinado pacote em uma maquina, porem nao sabemos se ja existe esse pacote instalado e voce precisa validar se o pacote existe no host remoto, caso não exista, a tarefa será executada e o pacote será instalado, caso exista, a tarefa não será executada. Depois de pesquisar um pouco e conversar com meus colegas de capitulo, conheci o Ansible que me ajudou bastante com essa questão. Neste artigo falarei um pouco de como é sua estrutura, como instalar o Ansible e como usei ele no meu projeto.
+Hoje vou falar um pouco sobre minha experiência com uma ferramenta muito útil de automação, o _Ansible_.
+Estou trabalhando em um projeto onde é desenvolvida uma aplicação que necessita de uma série de dependências e serviços para funcionar. Além de ter que automatizar todo o processo de instalação de bibliotecas, instalação/atualização de pacotes, serviços, deploy e etc, tambem tinha que contar com a possibilidade de futuramente ter que rodar essa mesma aplicação e suas dependências em outros servidores, mantendo sempre tudo atualizado e replicado em _Real Time_ para todos os nós e por ultimo e não menos importante, precisava pensar em uma forma de validar de forma "idempotent" se nessas maquinas ja existiam essas depedências, ou seja, o comando só poderia ser aplicado quando ele realmente necessitar ser aplicado. Explicando de uma forma mais precisa o significado do termo _idempotent_ para nosso cenario, pense que você precisa para instalar um determinado pacote em uma maquina, porem não sabemos se já existe esse pacote instalado e você precisa validar se o pacote existe no host remoto, caso não exista, a tarefa será executada e o pacote será instalado, caso exista, a tarefa não será executada. Depois de pesquisar um pouco e conversar com meus colegas de capitulo, conheci o Ansible que me ajudou bastante com essa questão. Neste artigo falarei um pouco de como é sua estrutura, como instalar o Ansible e como usei ele no meu projeto.
 
 ## O que é o Ansible?
 
-O Ansible é uma ferramenta Opensource de automação e provisionamento agil desenvolvida inicialmente por Michael DeHaan e atualmente mantida pela comunidade e pela Red Hat. O Ansible é de fácil aprendizagem e utiliza SSH para se comunicar com os clientes(nodes) não necessitando de agent, sua única dependência é ter Python2 instalado no(s) node(s) que já é nativo na maioria das distribuições Linux.
+O Ansible é uma ferramenta Opensource de automação e provisionamento ágil desenvolvida inicialmente por Michael DeHaan e atualmente mantida pela comunidade e pela Red Hat. O Ansible é de fácil aprendizagem e utiliza SSH para se comunicar com os clientes(nodes) não necessitando de agent, sua única dependência é ter Python2 instalado no(s) node(s) que já é nativo na maioria das distribuições Linux.
 
 Com Ansible é possível automatizar tarefas como:
 
@@ -35,7 +35,7 @@ http://docs.ansible.com/ansible/intro_installation.html
 
 ### Instalando o Ansible
 **O que iremos precisar?**
-Neste exemplo eu usei minha maquina e duas maquinas virtuais com SO Ubuntu16.04(Porque eu gosto, porque eu quero e porque sim) sendo a minha o Ansible-Server e as outras os nós gerenciados. A instalação é relativamente simples, você precisa instalá-lo somente em uma máquina que funcionará como um ponto central.
+Neste exemplo, eu usei duas maquinas virtuais com Sistema Operacional Ubuntu16.04 para os nós gerenciados e minha maquina como Ansible-Server. A instalação é relativamente simples, você precisa instalá-lo somente na máquina que funcionará como ponto central.
 
 **Para a instalação do Ansible-Server voce precisará seguir os seguintes steps:**
 
@@ -59,7 +59,7 @@ Neste exemplo eu usei minha maquina e duas maquinas virtuais com SO Ubuntu16.04(
 **O invetário**
 O arquivo de hosts de inventário do Ansible é usado para listar e agrupar seus servidores. Sua localização default é /etc/ansible/hosts.
 
-Eu costumo copiar e mover o default para que eu possa fazer referência a ele mais tarde:
+Eu costumo fazer um backup do arquivo default para usa-lo como referência mais tarde:
 + sudo mv /etc/ansible/hosts /etc/ansible/hosts.orig
 
 Depois de mover o arquivo de inventário de exemplo, crie um novo arquivo /etc/ansible/hosts e defina os servidores a serem gerenciados.
@@ -182,4 +182,4 @@ A sintaxe do comando para execução dos playbooks é:
 > ref: [Playbooks](http://docs.ansible.com/ansible/playbooks_intro.html).
 
 ## Conclusão
-Como vimos, o Ansible é uma ótima solução de provisionamento de ambientes e me ajudou bastante de forma rapida e eficiente. Existe alguns contras, como a exigente sintaxe e indentação do seu playbook. No entanto sua lógica é bastante simples. Sua documentacao é bem completa e há muitas opcoes que poderão te ajudar a construir seus proprios modulos em seus playbooks de acordo com sua necessidade.
+Como vimos, o Ansible é uma ótima solução de provisionamento de ambientes e me ajudou bastante de forma rápida e eficiente. Existe alguns pontos negativos, como a sintaxe exigente e a indentação do seu playbook. No entanto sua lógica é bastante simples. Sua documentacao é bem completa e há muitas opções que poderão te ajudar a construir seus próprios módulos em seus playbooks de acordo com sua necessidade.
