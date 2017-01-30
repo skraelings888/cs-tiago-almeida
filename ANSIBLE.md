@@ -1,41 +1,39 @@
-## Ansible ##
+# Automação e provisionamento agil com Ansible
 
-Hoje irei falar um pouco sobre uma ferramenta muito util de automação e gerenciamento de configuracao, o **Ansible**.
-
-Recentemente, ingressei em um projeto interno da empresa onde desenvolvemos uma aplicação que depende de uma série de dependencias e serviços para funcionar. Pensando que futuramente essa aplicação poderá em outros servidores, meu desafio era automatizar todo esse processo de instalação de bibliotecas, instalação/atualização de pacotes, serviços e etc... e em paralelo, precisava pensar em uma forma de validar de forma "idempotent" se essas depedencias ja estavam instaladas e se os serviços ja eram ativos nas maquinas onde a aplicação iria rodar, ou seja, o comando só poderá ser aplicado quando ele realmente necessitar ser aplicado. Explicando de uma forma mais precisa o significado do termo "idempotent" para nosso cenario, pense que voce precisa para instalar um determinado pacote em uma maquina, porem nao sabemos se ja existe esse pacote instalado e voce precisa validar se o pacote existe no host remoto, caso não exista a tarefa será executada e o pacote será instalado, caso exista a tarefa não será executada. Naquele momento eu precisava de uma solução em que eu pudesse configurar rapidamente e que pudesse replicar essa mesma receita em outros servidores em caso precisasse. Depois de pesquisar um pouco e conversar com meus colegas de capitulo, conheci o Ansible que me ajudou bastante com essa questão. Neste artigo falarei um pouco de como é sua estrutura, como instalar o Ansible e como usei ele no meu projeto.
+Hoje irei falar um pouco sobre minha experiencia com uma ferramenta muito util de automação, o _Ansible_.
+Estou trabalhando em um projeto onde é desenvolvida uma aplicação que depende de uma série de dependencias e serviços para funcionar. Além de ter que automatizar todo o processo de instalação de bibliotecas, instalação/atualização de pacotes, serviços, deploy e etc, tambe tinha que contar com a possibilidade de futuramente ter que rodar essa mesma aplicação e suas dependencias em outros servidores, mantendo sempre tudo atualizado e replicado em _Real Time_ para todos os nós e por ultimo e não menos importante, precisava pensar em uma forma de validar de forma "idempotent" se nessas maquinas ja existiam essas depedencias, ou seja, o comando só poderia ser aplicado quando ele realmente necessitar ser aplicado. Explicando de uma forma mais precisa o significado do termo _idempotent_ para nosso cenario, pense que voce precisa para instalar um determinado pacote em uma maquina, porem nao sabemos se ja existe esse pacote instalado e voce precisa validar se o pacote existe no host remoto, caso não exista, a tarefa será executada e o pacote será instalado, caso exista, a tarefa não será executada. Depois de pesquisar um pouco e conversar com meus colegas de capitulo, conheci o Ansible que me ajudou bastante com essa questão. Neste artigo falarei um pouco de como é sua estrutura, como instalar o Ansible e como usei ele no meu projeto.
 
 ## O que é o Ansible?
 
-O Ansible é uma ferramenta open source desenvolvida inicialmente por Michael DeHaan, atualmente mantida pela comunidade e pela Red Hat. O Ansible é uma ferramenta de automação e provisionamento agil de fácil aprendizagem que utiliza SSH para se comunicar com os clientes(nodes) não necessitando de agent, sua única dependência é ter Python2 instalado no(s) node(s), na maioria das distribuições Linux já vem incluso.
+O Ansible é uma ferramenta Opensource de automação e provisionamento agil desenvolvida inicialmente por Michael DeHaan e atualmente mantida pela comunidade e pela Red Hat. O Ansible é de fácil aprendizagem e utiliza SSH para se comunicar com os clientes(nodes) não necessitando de agent, sua única dependência é ter Python2 instalado no(s) node(s) que já é nativo na maioria das distribuições Linux.
 
 Com Ansible é possível automatizar tarefas como:
 
-- Instalação e atualização de pacotes;
-- Configuração e deploy de aplicações;
-- Gerenciamento de usuários e muitas outras tarefas administrativas com ganho enorme de desempenho, velocidade e produtividade;
++ Instalação e atualização de pacotes;
++ Configuração e deploy de aplicações;
++ Gerenciamento de usuários e muitas outras tarefas administrativas com ganho enorme de desempenho, velocidade e produtividade;
 
-A documentação oficial fica em
+A documentação oficial fica em:
+http://docs.ansible.com/ansible/intro_installation.html
 
-> ref: [DOC](http://docs.ansible.com/ansible/intro_installation.html).
+### A estrutura do Ansible
 
-## A estrutura do Ansible
++ **Inventory:** É um arquivo de inventario onde tera declarado quais os nós ou "hosts-alvos" que serão gerenciados pelo Ansible-Server;
++ **Modules:** Controlam os recursos (serviços, pacotes, arquivos, etc.) do(s) host(s) remoto(s);
++ **Tasks:** Tarefas que serão executadas no(s) host(s);
++ **Playbooks:** Conjunto de tarefas escritas em YAML(chave:valor) que serão executadas no(s) host(s);
 
-- **Inventory:** É um arquivo de inventario onde tera declarado quais os nós ou "hosts-alvos" que serão gerenciados pelo Ansible-Server;
-- **Modules:** Controlam os recursos (serviços, pacotes, arquivos, etc.) do(s) host(s) remoto(s);
-- **Tasks:** Tarefas que serão executadas no(s) host(s);
-- **Playbooks:** Conjunto de tarefas escritas em YAML(chave:valor) que serão executadas no(s) host(s);
+### Caracteristicas do Ansible
 
-## Caracteristicas do Ansible
-
-- Escrito em Python que é uma linguagem interpretada, de script, imperativa e orientada a objetos;
-- Não necessita de agents sejam instalados nos hosts remotos;
-- Utiliza SSH para se conectar aos hosts;
-- Para os Playbooks, utiliza a linguagem YAML que é facilmente entendida por seres humanos;
-- Utiliza linguagem Jinja2 para templates;
++ Escrito em Python que é uma linguagem interpretada, de script, imperativa e orientada a objetos;
++ Não necessita de agents sejam instalados nos hosts remotos;
++ Utiliza SSH para se conectar aos hosts;
++ Para os Playbooks, utiliza a linguagem YAML que é facilmente entendida por seres humanos;
++ Utiliza linguagem Jinja2 para templates;
 - Enorme quantidade de módulos e codigos no Github. Através do site https://galaxy.ansible.com/ ou do comando ansible-galaxy, é possível baixar e reutilizar playbooks escritos por outros usuários.
 
 
-#[Instalando o Ansible]
+### Instalando o Ansible
 **O que iremos precisar?**
 Neste exemplo eu usei minha maquina e duas maquinas virtuais com SO Ubuntu16.04(Porque eu gosto, porque eu quero e porque sim) sendo a minha o Ansible-Server e as outras os nós gerenciados. A instalação é relativamente simples, você precisa instalá-lo somente em uma máquina que funcionará como um ponto central.
 
@@ -57,7 +55,7 @@ Neste exemplo eu usei minha maquina e duas maquinas virtuais com SO Ubuntu16.04(
 ![homebrew](https://github.com/cs-tiago-almeida/cs-codes/blob/development/img/homebrew.png)
 
 
-##[Gerenciando Servidores]
+### Gerenciando Servidores
 **O invetário**
 O arquivo de hosts de inventário do Ansible é usado para listar e agrupar seus servidores. Sua localização default é /etc/ansible/hosts.
 
@@ -77,7 +75,7 @@ Aqui vamos definir os dois servidores sob o rótulo "webservers" e um com "local
 ![inventory](https://github.com/cs-tiago-almeida/cs-codes/blob/development/img/inventory.png)
 
 
-##[Conectando nos Servidores]
+### Conectando nos Servidores
 Para conectar ao seus servidores sem ter que digitar uma senha ou caso você ainda não tiver autenticação via chave ssh configurada para seus nós filhos, gere a chave no nó master:
 
 ![keygen](https://github.com/cs-tiago-almeida/cs-codes/blob/development/img/keygen.png)
@@ -96,7 +94,7 @@ Em seguida, copie sua chave pública para os servidores com o comando **ssh-copy
 
 > ref: [Post-Install Setup](https://valdhaus.co/writings/ansible-post-install/)
 
-##[Executando comandos]
+### Executando comandos
 **Comandos Ad-Hoc**
 Assim que tiver um inventário configurado, podemos começar a executar Tarefas nos os servidores definidos.
 
@@ -117,7 +115,7 @@ Onde:
 + **k** - Solicitar uma senha em vez de usar a autenticação baseada em chave
 + **u <user>** - Log em servidores usando usuário testcloud
 
-##[Modules]
+### Modules
 
 Ansible usa "módulos" para realizar a maioria de suas tarefas. Os módulos podem fazer coisas como instalar software, copiar arquivos, usar modelos e etc.
 
@@ -131,7 +129,7 @@ Acima, o comando **sudo apt-get install nginx** foi executado usando o módulo "
 
 Ele fara uso do módulo **apt** para instalar o Nginx (se não estiver instalado). O resultado da execução da Tarefa foi "changed": false. Isso mostra que não houve mudanças pois eu já havia instalado o Nginx nesta maquina. Posso executar este comando repetidamente sem me preocupar com ele afetando o resultado desejado.
 
-##Algumas FLAGS:
+### Algumas FLAGS:
 
 + **All** - Executar em todos os hosts definidos a partir do arquivo de inventário
 + **s** - Executar usando o sudo
@@ -141,7 +139,7 @@ Ele fara uso do módulo **apt** para instalar o Nginx (se não estiver instalado
 
 Podemos executar todas as nossas tarefas necessárias (através de módulos) desta forma ad-hoc, mas vamos tornar isso mais gerenciável. Vamos mover essa tarefa para um Playbook, que pode executar e coordenar várias tarefas ao mesmo tempo.
 
-##[Playbook Básico]
+### Playbook Básico
 
 Os Playbooks podem executar várias Tarefas(TASKS) e fornecer algumas funcionalidades mais avançadas. Segue um exemplo de um playbook com instação do requisitos do Apache LAMP.
 
@@ -164,7 +162,7 @@ As tarefas do playbook serão executadas em todos os nós declarados no grupo **
 Para executar o playbook execute o comando:
 ![webserver](https://github.com/cs-tiago-almeida/cs-codes/blob/development/img/webserver.png)
 
-Dando contuidade ao exemplo anterior, vamos colocar os comandos ad-hoc que executamos para instalar o NGINX dentro de um playbook ordenados em Tasks:
+Dando continuidade ao exemplo anterior, vamos colocar os comandos ad-hoc que executamos para instalar o NGINX dentro de um playbook ordenados em Tasks:
 
 Crie o arquivo nginx.yml com a configuração abaixo:
 
@@ -184,3 +182,4 @@ A sintaxe do comando para execução dos playbooks é:
 > ref: [Playbooks](http://docs.ansible.com/ansible/playbooks_intro.html).
 
 ## Conclusão
+Como vimos, o Ansible é uma ótima solução de provisionamento de ambientes e me ajudou bastante de forma rapida e eficiente. Existe alguns contras, como a exigente sintaxe e indentação do seu playbook. No entanto sua lógica é bastante simples. Sua documentacao é bem completa e há muitas opcoes que poderão te ajudar a construir seus proprios modulos em seus playbooks de acordo com sua necessidade.
